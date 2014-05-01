@@ -21,3 +21,10 @@ data Type : Set₁ where
 ⟦ μ D [ i ]× T ⟧Type = μ D i × ⟦ T ⟧Type
 ⟦ `⊤ ⟧Type = ⊤
 
+record type (I : Set) : Set₁ where
+  constructor mk
+  field
+    out : I → Type
+
+⟦_⟧type : {I : Set} → type I → (I → Set)
+⟦ T ⟧type i = ⟦ type.out T i ⟧Type

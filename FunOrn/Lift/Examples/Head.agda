@@ -42,16 +42,16 @@ typeHead = μ⁺ ListO A [ inv tt ]→
              μ⁺ MaybeO A [ inv tt ]× `⊤
 
 -- Paper: Example 6.18
-αL : liftAlg (ListO A) α (μ⁺ MaybeO A [ inv tt ]× `⊤)
+αL : liftAlg (ListO A) α (mk λ _ → μ⁺ MaybeO A [ inv tt ]× `⊤)
 αL {tt , ⟨ zero , tt ⟩} xs = lift-constructor (MaybeO A) tt tt tt
 αL {tt , ⟨ suc zero , n ⟩} (a , xs) = lift-constructor ((MaybeO A)) (a , tt) tt tt
 αL {tt , ⟨ suc (suc ()) , _ ⟩} _
 
 -- Paper: Example 6.9
 vhead : Patch isSuc typeHead
-vhead = lift-fold (ListO A)  {T⁺ = μ⁺ MaybeO A [ inv tt ]× `⊤} α (λ {i} → αL {i})
+vhead = lift-fold (ListO A)  {T⁺ = mk λ _ → μ⁺ MaybeO A [ inv tt ]× `⊤} α (λ {i} → αL {i})
 
 open import FunOrn.Patch.Apply
 
 head : ⟦ typeHead ⟧FunctionOrn
-head = patch typeHead isSuc vhead
+head = patch {⊤} {⊤} (mk λ _ → typeHead) isSuc vhead

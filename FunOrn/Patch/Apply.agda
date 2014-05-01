@@ -1,9 +1,8 @@
 module FunOrn.Patch.Apply where
 
-
-
 open import Data.Unit
 open import Data.Product
+open import Relation.Binary.PropositionalEquality
 
 open import Logic.Logic
 
@@ -20,12 +19,12 @@ open import FunOrn.FunOrnament
 open import FunOrn.Patch
 
 -- Paper: Definition 5.22
-patch : {T : Type } → (fo : FunctionOrn T)(f : ⟦ T ⟧Type) → 
-        Patch f fo → ⟦ fo ⟧FunctionOrn
-patch (μ⁺ o [ inv i⁺ ]→ T⁺) f p = 
-  λ x → patch T⁺ (f (forget o x)) 
-                 (p (forget o x)
-                    (make o x))
-patch (μ⁺ o [ inv i⁺ ]× T⁺) (x , xs) (x⁺⁺ , p) =
-  forgetReornament o x⁺⁺ , patch T⁺ xs p
-patch `⊤ tt tt = tt
+patch : ∀ {I I⁺ : Set}{u : I⁺ → I}{i⁺ : I⁺}
+        {T : type I} → (fo : forn T u)(f : ⟦ T ⟧type (u i⁺)) →
+        Patch f (forn.out fo i⁺) → ⟦ fo ⟧Forn i⁺
+patch {I}{I⁺}{u}{i⁺}{T} fo f p = go (forn.out fo i⁺) f p where
+  go : ∀ {U : Type} → (fo : FunctionOrn U) → (f : ⟦ U ⟧Type) →
+     Patch {U} f fo → ⟦ fo ⟧FunctionOrn
+  go (μ⁺ o [ inv i⁺ ]→ U⁺) f p = λ x → go U⁺ (f (forget o x)) (p (forget o x) (make o x))
+  go (μ⁺ o [ inv i⁺ ]× U⁺) (x , xs) (x⁺⁺ , p) = forgetReornament o x⁺⁺ , go U⁺ xs p
+  go `⊤ _ _ = tt

@@ -38,6 +38,23 @@ data FunctionOrn : Type  → Set₁ where
 ⟦ μ⁺ o [ inv i⁺ ]× T⁺ ⟧FunctionOrn = μ ⟦ o ⟧orn i⁺ × ⟦ T⁺ ⟧FunctionOrn
 ⟦ `⊤ ⟧FunctionOrn = ⊤
 
+⟦_⟧FO : ∀ {T} → FunctionOrn T → Type
+⟦ μ⁺ o [ inv i⁺ ]→ T⁺ ⟧FO = μ ⟦ o ⟧orn [ i⁺ ]→ ⟦ T⁺ ⟧FO
+⟦ μ⁺ o [ inv i⁺ ]× T⁺ ⟧FO = μ ⟦ o ⟧orn [ i⁺ ]× ⟦ T⁺ ⟧FO
+⟦ `⊤ ⟧FO = `⊤
+
+record forn {I K : Set}(T : type I)(u : K → I) : Set₁ where
+  constructor mk
+  field
+    out : (k : K) → FunctionOrn (type.out T (u k))
+
+⟦_⟧forn : ∀ {I K : Set}{T : type I}{u : K → I} → forn T u → type K
+⟦ fo ⟧forn = mk (λ k → ⟦ forn.out fo k ⟧FO)
+
+⟦_⟧Forn : ∀ {I K : Set}{T : type I}{u : K → I} →
+  forn T u → ((k : K) → Set)
+⟦ fo ⟧Forn k = ⟦ forn.out fo k ⟧FunctionOrn
+
 -- ** Coherence proof
 
 -- Paper: Definition 5.7

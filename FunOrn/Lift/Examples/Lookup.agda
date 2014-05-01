@@ -40,7 +40,7 @@ open import FunOrn.Lift.Constructor
               (λ {i} xs → β
                 (induction NatD _ (λ {i}{xs} → α {i}{xs}) n)
                 {i} xs) 
-              (μ⁺ MaybeO A [ inv tt ]× `⊤)
+              (mk (λ _ → μ⁺ MaybeO A [ inv tt ]× `⊤))
 βL n a ih {tt , ⟨ zero , tt ⟩} tt = 
         lift-constructor (MaybeO A) (a , tt) tt tt
 βL n a ih {tt , ⟨ suc zero , m ⟩} m' = ih m m'
@@ -48,28 +48,29 @@ open import FunOrn.Lift.Constructor
 
 -- Paper: Example 6.11
 -- Paper: Example 6.19
-αL : liftIH (ListO A) (λ {i}{xs} → α {i}{xs}) 
-              (μ⁺ (idO NatD) [ inv tt ]→ μ⁺ MaybeO A [ inv tt ]× `⊤)
+αL : liftIH (ListO A) (λ {i}{xs} → α {i}{xs}) (mk (λ _ → μ⁺ idO NatD [ inv tt ]→ (μ⁺ MaybeO A [ inv tt ]× `⊤)))
 αL {tt , ⟨ zero , tt ⟩} {tt} (tt) = 
         λ x xs → lift-constructor (MaybeO A) tt tt tt
 αL {tt , ⟨ suc zero , n ⟩} {a , m } ih = 
        lift-case (idO NatD) 
-               {T = μ BoolD [ tt ]× `⊤} 
-               {T⁺ = μ⁺ MaybeO A [ inv tt ]× `⊤}
+               {T = mk (λ _ → μ BoolD [ tt ]× `⊤)} 
+               {T⁺ = mk (λ _ → μ⁺ MaybeO A [ inv tt ]× `⊤)}
                (λ {i} xs → β (induction NatD _ (λ {i}{xs} → α {i}{xs}) n) {i} xs) 
                (λ {i} xs → βL n a ih {i} xs)
 αL {tt , ⟨ suc (suc ()) , _ ⟩} {_} _
 
 -- Paper: Example 6.11
+--vlookup : ptch (mk λ _ → type<) (mk λ _ → typeLookup A)
 vlookup : Patch _<_ (typeLookup A)
-vlookup m m' n vs = lift-ind (ListO A) {i = tt}{i⁺ = inv tt} 
-                           {T = μ NatD [ tt ]→ μ BoolD [ tt ]× `⊤}
-                           {T⁺ = μ⁺ (idO NatD) [ inv tt ]→ 
-                                 μ⁺ MaybeO A [ inv tt ]× `⊤} 
+vlookup m m' n vs = lift-ind (ListO A) {i⁺ = tt} 
+                           {T = mk (λ _ → μ NatD [ tt ]→ μ BoolD [ tt ]× `⊤)}
+                           {T⁺ = mk (λ _ → μ⁺ idO NatD [ inv tt ]→
+                                          (μ⁺ MaybeO A [ inv tt ]× `⊤))}
                            (λ {i}{xs} → α {i}{xs})
                            (λ{i}{xs} → αL {i}{xs}) n vs m m'
 
 open import FunOrn.Patch.Apply
 
 lookup : ⟦ typeLookup A ⟧FunctionOrn
-lookup = patch (typeLookup A) _<_ vlookup
+lookup = patch {⊤}{⊤} (mk λ _ → typeLookup A) _<_ vlookup
+

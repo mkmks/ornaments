@@ -23,3 +23,13 @@ Patch {T = μ D [ ._ ]→ T} f (μ⁺ o [ inv i⁺ ]→ T⁺) =
 Patch {T = μ D [ ._ ]× T} (x , t) (μ⁺ o [ inv i⁺ ]× T⁺) =
       μ ⌈ o ⌉D (i⁺ , x) × Patch t T⁺
 Patch {T = `⊤} tt `⊤ = ⊤
+
+record ptch {I I⁺ : Set}{u : I⁺ → I}(T : type I)(fo : forn T u) : Set₁ where
+  constructor mk
+  field
+    out : (i⁺ : I⁺) →  (f : ⟦ T ⟧type (u i⁺)) → Patch {type.out T (u i⁺)} f (forn.out fo i⁺)
+
+⟦_⟧patch : ∀ {I I⁺ : Set}{u : I⁺ → I}{T : type I}{fo : forn T u} →
+           ptch {I}{I⁺}{u} (mk (type.out T)) fo →
+           ((i⁺ : I⁺) → (f : ⟦ T ⟧type (u i⁺)) → Patch {type.out T (u i⁺)} f (forn.out fo i⁺))
+⟦ p ⟧patch i⁺ f = ptch.out p i⁺ f

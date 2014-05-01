@@ -33,23 +33,23 @@ open import FunOrn.Lift.Constructor
      μ ⌈ ListO A ⌉D (tt , m) →
      liftIH (ListO A)
               (λ {i}{xs} → α m {i}{xs}) 
-              (μ⁺ ListO A [ inv tt ]× `⊤)
+              (mk (λ _ → μ⁺ ListO A [ inv tt ]× `⊤))
 αL m xs {tt , ⟨ zero , tt ⟩} {tt} tt = xs , tt
 αL m xs {tt , ⟨ suc zero , n ⟩} {a , ys} (ih , tt) =
-     lift-constructor (ListO A) {i⁺ = inv tt} {T = `⊤} {T⁺ = `⊤} 
+     lift-constructor (ListO A) {i⁺ = tt} {T = mk λ _ → `⊤} {T⁺ = mk λ _ → `⊤} 
                      (a , tt) 
                      ih  tt
 αL m xs {tt , ⟨ suc (suc ()) , _ ⟩} _
 
 -- Paper: Example 6.12
 vappend :  Patch _+_ (typeAppend A)
-vappend m xs n ys = lift-ind (ListO A) {tt} {inv tt}
-                            {T = μ NatD [ tt ]× `⊤} 
-                            {T⁺ = μ⁺ ListO A [ inv tt ]× `⊤ }
+vappend m xs n ys = lift-ind (ListO A) {i⁺ = tt}
+                            {T = mk (λ _ → μ NatD [ tt ]× `⊤)} 
+                            {T⁺ = mk (λ _ → μ⁺ ListO A [ inv tt ]× `⊤) }
                             (λ {i}{hs} → α m {i}{hs}) 
                             (λ {i}{hs} → αL m xs {i}{hs}) n ys
 
 open import FunOrn.Patch.Apply
 
 append : ⟦ typeAppend A ⟧FunctionOrn
-append = patch (typeAppend A) _+_ vappend
+append = patch {⊤} {⊤} (mk λ _ → typeAppend A) _+_ vappend
