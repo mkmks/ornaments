@@ -9,7 +9,7 @@ open import Function
 
 open import Logic.Logic
 
-open import IDesc
+open import IDesc.IDesc
 
 open import Orn.Ornament
 
@@ -23,7 +23,7 @@ compose o₁ o₂ =
   where ins : ∀{i} → Orn u₂ ⟦ {!!} ⟧Orn  → Orn (u₁ ∘ u₂) (`var (u₁ i))
         ins o = {!!}
 
-        help : {D : IDesc_} → (O₁ : Orn u₁ D) → Orn u₂ ⟦ O₁ ⟧Orn → Orn (u₁ ∘ u₂) D 
+        help : {D : IDesc _} → (O₁ : Orn u₁ D) → Orn u₂ ⟦ O₁ ⟧Orn → Orn (u₁ ∘ u₂) D 
         help (insert S D⁺) O₂ = insert S (λ s → help (D⁺ s) O₂)
         help (`var (inv i)) O₂ = {!!}
         help `1 O₂ = `1
