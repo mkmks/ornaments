@@ -36,3 +36,6 @@ module Fold  {X : I → Set }(α : Alg X)
 fold : {X : I → Set }(α : Alg X) →
        {i : I} → μ D i → X i
 fold = Fold.fold
+
+inᵒ : μ D ⇒ ⟦ D ⟧func (μ D)
+inᵒ = fold (⟦ D ⟧fmap ⟨_⟩)
