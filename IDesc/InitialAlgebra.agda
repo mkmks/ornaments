@@ -1,5 +1,3 @@
-
-
 open import Data.Unit
 open import Data.Product
 
@@ -13,13 +11,13 @@ module IDesc.InitialAlgebra
           (D : func I I) where
 
 Alg : (I → Set) → Set
-Alg X = {i : I} → ⟦ D ⟧func X i → X i
+Alg X = ⟦ D ⟧func X ⇒ X
 
 module Fold  {X : I → Set }(α : Alg X)
        where
 
   mutual
-    fold : {i : I} → μ D i → X i
+    fold : μ D ⇒ X
     fold ⟨ xs ⟩ = α (hyps (func.out D _) xs)
 
     hyps : (D' : IDesc  I) → 
@@ -33,8 +31,7 @@ module Fold  {X : I → Set }(α : Alg X)
     hyps (`Π S T) f = λ s → hyps (T s) (f s)
 
 -- Paper typesetting: (| _ |)
-fold : {X : I → Set }(α : Alg X) →
-       {i : I} → μ D i → X i
+fold : {X : I → Set }(α : Alg X) → μ D ⇒ X
 fold = Fold.fold
 
 inᵒ : μ D ⇒ ⟦ D ⟧func (μ D)
