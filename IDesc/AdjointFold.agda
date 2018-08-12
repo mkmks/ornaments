@@ -44,20 +44,29 @@ record AdjointScheme {I : Set}{X : I → Set}(F : func I I) : Set₁ where
 
 open AdjointScheme
 
-×→ : ∀ {X}(A : Set)(F : func ⊤ ⊤)  → AdjointScheme {⊤} {X} F
-×→ A F = record { L = mk λ _ → `Σ A λ _ → `var tt
-                ; R = mk λ _ → `Π A λ _ → `var tt
+IdId : ∀ {I X F} → AdjointScheme {I} {X} F
+IdId = record { L = mk `var ; R = mk `var ; η = id ; ε = id }
+
+cata : ∀ {I X F} → (⟦ G {I} {X} {F} IdId ⟧func X ⇒ X) → μ F ⇒ X
+cata = ⊣-fold IdId
+
+ana : ∀ {I X F} → (X ⇒ ⟦ G {I} {X} {F} IdId ⟧func X) → X ⇒ ν F
+ana = ⊣-unfold IdId
+
+×→ : ∀ {I X}(A : Set)(F : func I I) → AdjointScheme {I} {X} F
+×→ A F = record { L = mk λ i → `Σ A λ _ → `var i
+                ; R = mk λ i → `Π A λ _ → `var i
                 ; η = flip _,_
                 ; ε = uncurry (flip _$_)}
 
-para : ∀ {A F X} → (⟦ G {X = X} (×→ A F) ⟧func X ⇒ X) → ⟦ L {X = X} (×→ A F) ⟧func (μ F) tt → X tt
-para {A} {F} a = ⊣-fold (×→ A F) a
+para : ∀ {A I X F} → (⟦ G {I} {X} {F} (×→ A F) ⟧func X ⇒ X) → ⟦ L {X = X} (×→ A F) ⟧func (μ F) ⇒ X
+para {A} {F = F} = ⊣-fold (×→ A F)
 
-+△ : ∀ {X}(F : func ⊤ ⊤) → AdjointScheme {⊤} {X} F
-+△ F = record { L = mk λ _ → `σ 2 λ { zero → `var tt ; (suc zero) → `var tt ; (suc (suc ())) }
-              ; R = mk λ _ → `var tt `× `var tt
++△ : ∀ {I X}(F : func I I) → AdjointScheme {I} {X} F
++△ F = record { L = mk λ i → `σ 2 λ { zero → `var i ; (suc zero) → `var i ; (suc (suc ())) }
+              ; R = mk λ i → `var i `× `var i
               ; η = < (λ x → zero , x) , (λ x → (suc zero) , x) >
               ; ε = λ { (zero , xy) → proj₁ xy ; (suc zero , xy) → proj₂ xy ; (suc (suc ()) , _) } }
 
-apo : ∀ {F X} → (X ⇒ ⟦ G' {X = X} (+△ F) ⟧func X) → X tt → ⟦ R {X = X} (+△ F) ⟧func (ν F) tt
-apo {F} c = ⊣-unfold (+△ F) c
+apo : ∀ {I X F} → (X ⇒ ⟦ G' {I} {X} {F} (+△ F) ⟧func X) → X ⇒ ⟦ R {X = X} (+△ F) ⟧func (ν F)
+apo {F = F} = ⊣-unfold (+△ F)
